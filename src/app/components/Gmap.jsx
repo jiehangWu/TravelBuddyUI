@@ -46,10 +46,11 @@ class Gmap extends Component {
     };
 
     render() {
+        console.log(process.env)
         return (
             <div style={{ height: '100vh', width: '100%' }}>
                 <GoogleMapReact
-                bootstrapURLKeys={{ key: process.env.GMAP_KEY }}
+                bootstrapURLKeys={{ key: process.env.REACT_APP_GMAP_KEY }}
                 defaultCenter={this.props.center}
                 defaultZoom={this.props.zoom}
                 >

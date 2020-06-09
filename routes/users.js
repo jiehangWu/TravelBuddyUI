@@ -1,11 +1,10 @@
 import express from 'express';
-import config from '../config.js';
 
 const router = express.Router();
 
 router.get('/', function(req, res, next) {
   // GET/users/ route
-  res.send({name: config.admin.name});
+  res.send({name: 'Luke'});
 });
 
 export default router;

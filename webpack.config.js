@@ -1,6 +1,7 @@
 const webpack = require("webpack");
 const path = require("path");
 const debug = require("debug");
+const Dotenv = require('dotenv-webpack');
 
 const BUILD_DIR = path.resolve(__dirname, "src/public");
 const APP_DIR = path.resolve(__dirname, "src/app");
@@ -15,6 +16,9 @@ var config = {
   output: {
     path: BUILD_DIR,
     filename: "client.min.js"
+  },
+  node: {
+    fs: "empty"
   },
   module: {
     rules: [
@@ -66,13 +70,13 @@ var config = {
     }
   },
 
-  plugins: debug
-    ? []
-    : [
-        new webpack.optimize.DedupePlugin(),
-        new webpack.optimize.OccurrenceOrderPlugin(),
-        new webpack.optimize.UglifyJsPlugin({ mangle: false, sourcemap: false })
-      ]
+  plugins: [
+    // new webpack.optimize.DedupePlugin(),
+    // new webpack.optimize.OccurrenceOrderPlugin(),
+    // new webpack.optimize.UglifyJsPlugin({ mangle: false, sourcemap: false }),
+    new Dotenv(),
+    new webpack.EnvironmentPlugin(["REACT_APP_GMAP_KEY"])
+  ]
 };
 
 module.exports = config;
