@@ -2,18 +2,23 @@ import express from "express";
 import http from "http";
 import bodyParser from "body-parser";
 import users from "./routes/users";
+import cors from 'cors';
 
 require('dotenv').config()
 
 const app = express();
-
+var corsOptions = {
+    origin: 'http://localhost:8080'
+}
 app.use(express.static(__dirname + "/src"));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-app.use("/users", users);
+app.use("/users", cors(corsOptions), users);
 
-app.listen(process.env.PORT, () =>
-    console.log(`Server is listening on port ${process.env.PORT}`)
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () =>
+    console.log(`Server is listening on port ${PORT}`)
 );

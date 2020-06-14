@@ -3,6 +3,11 @@
     ["@babel/env", { "targets": {"node": "current" } }]
   ],
   "plugins": [
-    "@babel/plugin-proposal-export-default-from"
+    "@babel/plugin-proposal-export-default-from",
+    ["@babel/plugin-transform-runtime",
+      {
+        "regenerator": true
+      }
+    ]
   ]
 }

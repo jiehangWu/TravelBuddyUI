@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { json } from "body-parser";
+// import axios from 'axios';
 
 class User extends Component {
   constructor(props) {
@@ -9,33 +9,32 @@ class User extends Component {
 		name: ""
 	  }
 	};
-	this.fetchUsers = this.fetchUsers.bind(this);
+	this.fetchUser = this.fetchUser.bind(this);
   }
 
-  fetchUsers() {
-	const mockRsp = {name: 'Mengxi'}
-	this.setState({
-	  user: mockRsp
-	})
-	// fetch("/users/getUsers")
-	//   .then(response => {
-	//     return response.json();
-	//   })
-	//   .then(json => {
-	//     this.setState({
-	//       user: json
-	//     });
-	//   });
+  fetchUser() {
+	async function getdisplayNameByIdAsync() {
+		let response = await fetch("http://localhost:8080/users/1");
+		let json = await response.json();
+		return json
+	}
+
+	getdisplayNameByIdAsync()
+		.then(json=> {
+			this.setState({
+				user: json
+			});
+		});
   }
 
   componentWillMount() {
-	this.fetchUsers();
+	this.fetchUser();
   }
 
   render() {
 	return (
 	  <div className="user">
-		<h1>Hello {this.state.user.name}</h1>
+		<h1>Hello {this.state.user["displayName"]}</h1>
 	  </div>
 	);
   }
