@@ -1,5 +1,4 @@
 import express from "express";
-import http from "http";
 import bodyParser from "body-parser";
 import users from "./routes/users";
 import cors from 'cors';
