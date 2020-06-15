@@ -23,32 +23,32 @@ const Wrapper = styled.div`
   }
 `;
 
-// const Marker = (props) => {
-//   return (
-//     <Wrapper
-//       alt={props.text}
-//       {...props.onClick ? { onClick: props.onClick } : {}}
-//     >{props.text}
-//     </Wrapper>
-//   );
-// };
-
-const Marker = ({lat, lng, text}) => {
+const Marker = (props) => {
   return (
-    <Wrapper alt={text}>
-      {text}
+    <Wrapper
+      alt={props.text}
+      {...props.onClick ? { onClick: props.onClick } : {}}
+    >{props.text}
     </Wrapper>
   );
 };
 
-// Marker.defaultProps = {
-//   onClick: null,
+// const Marker = ({lat, lng, text, onClick}) => {
+//   return (
+//     <Wrapper alt={text}>
+//       {text}
+//     </Wrapper>
+//   );
 // };
 
-// Marker.propTypes = {
-//   onClick: PropTypes.func,
-//   text: PropTypes.string.isRequired,
-// };
+Marker.defaultProps = {
+  onClick: null,
+};
+
+Marker.propTypes = {
+  onClick: PropTypes.func,
+  text: PropTypes.string.isRequired,
+};
 
 class Gmap extends Component {
   constructor(props) {
@@ -97,11 +97,12 @@ class Gmap extends Component {
           defaultCenter={this.props.center}
           defaultZoom={this.props.zoom}
         >
-          {/* <Marker
+          <Marker
             lat={49.2827}
             lng={-123.1307}
             text="My Marker"
-          /> */}
+            onClick ={() => console.log("Clicked")}
+          />
           {this.state.markers.map((marker) => {
             let lat = marker.lat;
             let lng = marker.lng;
