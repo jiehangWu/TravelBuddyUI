@@ -6,8 +6,8 @@ import Typography from '@material-ui/core/Typography';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import { Component } from 'react';
 import axios from 'axios';
-import { makeStyles } from '@material-ui/core/styles';
-import IconButton from '@material-ui/core/IconButton';
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever';import IconButton from '@material-ui/core/IconButton';
+import ThumbDownAltIcon from '@material-ui/icons/ThumbDownAlt';
 
 export class Input extends Component {
     constructor(props) {
@@ -20,7 +20,7 @@ export class Input extends Component {
         this.fetchAllComments = this.fetchAllComments.bind(this);
         this.createComment = this.createComment.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
-        this.fetchUserNameById = this.fetchUserNameById.bind(this);
+        // this.fetchUserNameById = this.fetchUserNameById.bind(this);
     }
 
     createComment(content) {
@@ -56,20 +56,21 @@ export class Input extends Component {
     }
 
     // TODO
-    fetchUserNameById(id) {
-        axios.get(`http://localhost:8080/users/${id}`)
-            .then(res => {
-                const user = res.data;
-                this.setState({
-                    user
-                });
-            })
-    }
+    // fetchUserNameById(id) {
+    //     axios.get(`http://localhost:8080/users/${id}`)
+    //         .then(res => {
+    //             const user = res.data;
+    //             this.setState({
+    //                 user
+    //             });
+    //         })
+    // }
 
     componentDidMount() {
         this.fetchAllComments();
     }
 
+   
     render() {
         return (
             <div className="container">
@@ -96,7 +97,10 @@ export class Input extends Component {
                     this.state.comments.map(comment => {
                         return (
                             <Comment comment={comment.ccontent}
-                                // TODO user={this.fetchUserNameById(comment.userid)} />
+                                _id={comment.id}
+                                upvote={comment.upvote}
+                                downvote={comment.downvote} 
+                                parentMethod={() => this.fetchAllComments()}/>
                         );
                     })
                 }
@@ -105,33 +109,90 @@ export class Input extends Component {
     }
 };
 
-const styles = makeStyles((theme) => ({
-    container: {
-        width: "60%",
-        marginLeft: "20%",
-        marginRight: "20%"
+class Comment extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            user: props.user,
+            _id: props._id,
+            upvote: props.upvote,
+            downvote: props.downvote,
+            comment: props.comment,
+            parentMethod: props.parentMethod
+        }
     }
-}));
 
-const Comment = ({ comment, user }) => {
-    const classes = styles();
+    upvote() {
+        axios.put(`http://localhost:8080/upvote/${this.state._id}`)
+        .then(() => {
+            this.fetchUpvoteById(this.state._id);
+        });
+    }
 
-    return (
-        <div className={classes.container}>
-            <Card className={classes.post} >
-                <CardHeader
-                    title={user}
-                >
-                </CardHeader>
-                <CardContent>
-                    <Typography variant="body2" color="textPrimary" component="p">
-                        {comment}
-                    </Typography>
-                </CardContent>
-                <IconButton aria-label="like">
-                    <FavoriteIcon color='secondary' />
-                </IconButton>
-            </Card>
-        </div>
-    );
+    downvote() {
+        axios.put(`http://localhost:8080/downvote/${this.state._id}`)
+        .then(() => {
+            this.fetchDownvoteById(this.state._id);
+        });
+    }
+
+    delete() {
+        axios.delete(`http://localhost:8080/comment/${this.state._id}`)
+            .then(() => {
+                this.props.parentMethod();
+            });
+    }
+
+    fetchUpvoteById(id) {
+        axios.get(`http://localhost:8080/upvote/${id}`)
+            .then((res) => {
+                const upvote = res.data;
+                this.setState({
+                    upvote
+                });
+            });
+    }
+
+    fetchDownvoteById(id) {
+        axios.get(`http://localhost:8080/downvote/${id}`)
+            .then((res) => {
+                const downvote = res.data;
+                this.setState({
+                    downvote
+                });
+            });
+    }
+
+    render() {
+        return (
+            <div className="container">
+                <Card className="comment">
+                    <CardHeader
+                        title={this.state.user}
+                    >
+                    </CardHeader>
+                    <CardContent>
+                        <Typography variant="body2" color="textPrimary" component="p">
+                            {this.state.comment}
+                        </Typography>
+                    </CardContent>
+                    <IconButton aria-label="upvote" onClick={() => this.upvote()}>
+                        <FavoriteIcon color='secondary'/>
+                        <div>
+                        {this.state.upvote}
+                        </div>
+                    </IconButton>
+                    <IconButton aria-label="downvote" onClick={() => this.downvote()}>
+                        <ThumbDownAltIcon color='default'/>
+                        <div>
+                        {this.state.downvote}
+                        </div>
+                    </IconButton>
+                    <IconButton aria-label="delete" onClick={() => this.delete()}>
+                        <DeleteForeverIcon color='default'/>
+                    </IconButton>
+                </Card>
+            </div>
+        );
+    }
 };
