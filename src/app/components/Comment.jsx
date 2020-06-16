@@ -73,7 +73,7 @@ export class Input extends Component {
    
     render() {
         return (
-            <div className="container">
+            <div className="container" style={{ marginTop: "50px" }}>
                 <Card className="input-area my-3">
                     <div className="row">
                         <div className="col-lg-10">

@@ -23,6 +23,23 @@ const Wrapper = styled.div`
   }
 `;
 
+const CenterWrapper = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 22px;
+  height: 22px;
+  background-color: green;
+  border: 2px solid #fff;
+  border-radius: 100%;
+  user-select: none;
+  transform: translate(-50%, -50%);
+  cursor: ${props => (props.onClick ? 'pointer' : 'default')};
+  &:hover {
+    z-index: 1;
+  }
+`;
+
 const Marker = (props) => {
   return (
     <Wrapper
@@ -30,6 +47,16 @@ const Marker = (props) => {
       {...props.onClick ? { onClick: props.onClick } : {}}
     >{props.text}
     </Wrapper>
+  );
+};
+
+const Center = (props) => {
+  return (
+    <CenterWrapper
+      alt={props.text}
+      {...props.onClick ? { onClick: props.onClick } : {}}
+    >{props.text}
+    </CenterWrapper>
   );
 };
 
@@ -54,12 +81,12 @@ class Gmap extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      center: { lat: 49.2827, lng: -123.1207 },
       markers: []
     };
     // this.fetchAllGeolocations = this.fetchAllGeolocations.bind(this);
   }
   static defaultProps = {
-    center: { lat: 49.2827, lng: -123.1207 },
     zoom: 10
   };
 
@@ -89,17 +116,42 @@ class Gmap extends Component {
       });
   }
 
+  searchDestination(x, y) {
+    // TODO: Validation
+    this.setState({
+        center: {
+          lat: parseFloat(x),
+          lng: parseFloat(y),
+        }, 
+      });
+  }
+
+
   render() {
     return (
       <div style={{ height: '100vh', width: '100%' }}>
+        <button onClick={() => {
+            const buf_lat = document.getElementById("input_lat").value
+            const buf_lng = document.getElementById("input_lng").value
+            console.log("inputting lat: " + buf_lat + ", lng: " + buf_lng)
+            this.searchDestination(buf_lat, buf_lng)
+          }}
+        >Search location</button>
         <GoogleMapReact
           bootstrapURLKeys={{ key: process.env.REACT_APP_GMAP_KEY }}
-          defaultCenter={this.props.center}
+          defaultCenter={this.state.center}
+          center={this.state.center}
           defaultZoom={this.props.zoom}
         >
+          <Center
+            lat={this.state.center.lat}
+            lng={this.state.center.lng}
+            text="Destination"
+            onClick ={() => console.log("Destination was Clicked")}
+          />
           <Marker
-            lat={49.2827}
-            lng={-123.1307}
+            lat={49.2527}
+            lng={-123.1397}
             text="My Marker"
             onClick ={() => console.log("Clicked")}
           />
