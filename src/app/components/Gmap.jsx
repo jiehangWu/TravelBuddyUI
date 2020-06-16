@@ -78,8 +78,8 @@ class Gmap extends Component {
       .then(res => {
         const markers = res.data.map(obj => {
           return {
-            lat: obj["latitude"],
-            lng: obj["longitude"]
+            lat: parseFloat(obj["latitude"]),
+            lng: parseFloat(obj["longitude"])
           };
         });
 

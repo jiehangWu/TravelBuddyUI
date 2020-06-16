@@ -14,7 +14,7 @@ app.use(express.static(__dirname + "/src"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-app.use("/users", cors(corsOptions), users);
+app.use("/users", users);
 
 const PORT = process.env.PORT || 3000;
 

@@ -28,8 +28,8 @@ export class Input extends Component {
             "ccontent": content,
             "upvote": 0,
             "downvote": 0,
-            "longitude": 1,
-            "latitude": 1,
+            "longitude": "49.288024",
+            "latitude": "-123.127126",
             "userId": 1
         })
             .then(() => {
