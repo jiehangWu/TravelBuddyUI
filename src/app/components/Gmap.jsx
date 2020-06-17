@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-// import { Map, Marker, GoogleApiWrapper } from 'google-maps-react';
 import GoogleMapReact from 'google-map-react';
 
 import PropTypes from 'prop-types';
@@ -40,7 +39,7 @@ const CenterWrapper = styled.div`
   }
 `;
 
-const Marker = (props) => {
+const CovidCase = (props) => {
   return (
     <Wrapper
       alt={props.text}
@@ -60,19 +59,11 @@ const Center = (props) => {
   );
 };
 
-// const Marker = ({lat, lng, text, onClick}) => {
-//   return (
-//     <Wrapper alt={text}>
-//       {text}
-//     </Wrapper>
-//   );
-// };
-
-Marker.defaultProps = {
+CovidCase.defaultProps = {
   onClick: null,
 };
 
-Marker.propTypes = {
+CovidCase.propTypes = {
   onClick: PropTypes.func,
   text: PropTypes.string.isRequired,
 };
@@ -90,32 +81,6 @@ class Gmap extends Component {
     zoom: 10
   };
 
-  // fetchAllGeolocations() {
-  //   async function getAllLocations() {
-  //     let response = await fetch("http://localhost:8080/locations");
-  //     let json = await response.json();
-  //     return json;
-  //   }
-
-  //   return getAllLocations();
-  // }
-
-  componentDidMount() {
-    axios.get("http://localhost:8080/locations")
-      .then(res => {
-        const markers = res.data.map(obj => {
-          return {
-            lat: obj["latitude"],
-            lng: obj["longitude"]
-          };
-        });
-
-        this.setState({
-          markers
-        })
-      });
-  }
-
   searchDestination(x, y) {
     // TODO: Validation
     this.setState({
@@ -124,6 +89,21 @@ class Gmap extends Component {
           lng: parseFloat(y),
         }, 
       });
+    
+    axios.get(`http://localhost:8080/covidcaserangelist/${this.state.center.lat}/${this.state.center.lng}`)
+    .then(res => {
+      const markers = res.data.map(obj => {
+        return {
+          lat: obj["latitude"],
+          lng: obj["longitude"],
+          count: obj["count"]
+        };
+      });
+
+      this.setState({
+        markers
+      })
+    });
   }
 
 
@@ -143,34 +123,26 @@ class Gmap extends Component {
           center={this.state.center}
           defaultZoom={this.props.zoom}
         >
+          {this.state.markers.map((marker) => {
+            let lat = marker.lat;
+            let lng = marker.lng;
+            console.log({ lat, lng });
+            return (
+              <CovidCase
+                lat={lat}
+                lng={lng}
+                text={marker.count}
+                style={{ height: `${marker.count * 5}vh`, width: '100%' }}
+                onClick ={() => console.log("Clicked")}
+              />
+            );
+          })}
           <Center
             lat={this.state.center.lat}
             lng={this.state.center.lng}
             text="Destination"
             onClick ={() => console.log("Destination was Clicked")}
           />
-          <Marker
-            lat={49.2527}
-            lng={-123.1397}
-            text="My Marker"
-            onClick ={() => console.log("Clicked")}
-          />
-          {this.state.markers.map((marker) => {
-            let lat = marker.lat;
-            let lng = marker.lng;
-            console.log({ lat, lng });
-            return (
-              <Marker
-                lat={lat}
-                lng={lng}
-                text="marker"
-              />
-              // <div>
-              //   {lat},
-              //   {lng}
-              // </div>
-            );
-          })}
         </GoogleMapReact>
       </div>
     )

@@ -28,9 +28,10 @@ export class Input extends Component {
             "ccontent": content,
             "upvote": 0,
             "downvote": 0,
-            "longitude": 1,
-            "latitude": 1,
-            "userId": 1
+            "longitude": -123.2034,
+            "latitude": 49.2649,
+            "userId": 1,
+            "id":3
         })
             .then(() => {
                 this.fetchAllComments();
