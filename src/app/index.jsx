@@ -14,6 +14,8 @@ class App extends React.Component {
       <div className="home">
         <User />
         <p>Welcome to Travel Buddy Covid-19 edition!</p>
+        <input id="input_lat" type="number" placeholder="latitude"/>
+        <input id="input_lng" type="number" placeholder="longitude"/>
         <Gmap />
         <Input />
       </div>

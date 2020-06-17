@@ -28,9 +28,16 @@ export class Input extends Component {
             "ccontent": content,
             "upvote": 0,
             "downvote": 0,
+<<<<<<< HEAD
             "longitude": "49.288024",
             "latitude": "-123.127126",
             "userId": 1
+=======
+            "longitude": -123.2034,
+            "latitude": 49.2649,
+            "userId": 1,
+            "id":3
+>>>>>>> a618104dbad85a0d78e4686d89e6b3c21f9d89c7
         })
             .then(() => {
                 this.fetchAllComments();
@@ -73,7 +80,7 @@ export class Input extends Component {
    
     render() {
         return (
-            <div className="container">
+            <div className="container" style={{ marginTop: "50px" }}>
                 <Card className="input-area my-3">
                     <div className="row">
                         <div className="col-lg-10">
