@@ -12,6 +12,8 @@ class App extends React.Component {
   render() {
     return (
       <div className="home">
+        <input id="input_useremail" placeholder="user email"/>
+        <input id="input_userpassword" placeholder="user password"/>
         <User />
         <p>Welcome to Travel Buddy Covid-19 edition! Please enter your destination:</p>
         <input id="input_lat" type="number" placeholder="latitude"/>

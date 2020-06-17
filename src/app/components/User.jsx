@@ -1,38 +1,47 @@
 import React, { Component } from "react";
+import axios from 'axios';
 
 class User extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			usercre: {
+				email: "unknown",
+				password: ""
+			},
 			user: {
-				name: ""
+				displayName: ""
 			}
 		};
-		this.fetchUser = this.fetchUser.bind(this);
 	}
 
 	fetchUser() {
-		async function getdisplayNameByIdAsync() {
-			let response = await fetch("http://localhost:8080/users/10");
-			let json = await response.json();
-			return json;
-		}
-
-		getdisplayNameByIdAsync()
-			.then(json => {
+		if (this.state.usercre.email != "unknown") {
+			console.log(`Calling http://localhost:8080/users/${this.state.usercre.email}/${this.state.usercre.password}`)
+			axios.get(`http://localhost:8080/users/${this.state.usercre.email}/${this.state.usercre.password}`)
+			.then(res => {
+				console.log(res)
 				this.setState({
-					user: json
+					user: res.data
 				});
 			});
-	}
-
-	componentDidMount() {
-		this.fetchUser();
+		}
 	}
 
 	render() {
 		return (
 			<div className="user">
+				<button onClick={() => {
+					const uemail = document.getElementById("input_useremail").value
+					const upw = document.getElementById("input_userpassword").value
+					this.setState({
+						usercre:{
+							email: uemail,
+							password: upw
+						}
+					});
+					this.fetchUser()
+				}}>Login</button>
 				<h1>Hello {this.state.user["displayName"]}</h1>
 			</div>
 		);
