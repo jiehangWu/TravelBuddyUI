@@ -24,6 +24,8 @@ class User extends Component {
 				this.setState({
 					user: res.data
 				});
+
+				this.props.setAppUser(res.data)
 			});
 		}
 	}

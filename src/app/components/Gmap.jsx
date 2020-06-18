@@ -107,6 +107,11 @@ class Gmap extends Component {
         markers
       })
     });
+
+    this.props.setAppDestination({
+      lat: parseFloat(x),
+      lng: parseFloat(y),
+    });
   }
 
 
