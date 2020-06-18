@@ -9,7 +9,7 @@ import axios from 'axios';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';import IconButton from '@material-ui/core/IconButton';
 import ThumbDownAltIcon from '@material-ui/icons/ThumbDownAlt';
 
-export class Input extends Component {
+export class CommentList extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -21,27 +21,33 @@ export class Input extends Component {
         this.createComment = this.createComment.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         // this.fetchUserNameById = this.fetchUserNameById.bind(this);
+
+        this.props.user = {
+            id: "",
+            displayName: ""
+        }
+        this.props.destination = {
+            lat: 0.0,
+            lng: 0.0
+        }
     }
 
     createComment(content) {
-        axios.post('http://localhost:8080/comment', {
-            "ccontent": content,
-            "upvote": 0,
-            "downvote": 0,
-<<<<<<< HEAD
-            "longitude": "49.288024",
-            "latitude": "-123.127126",
-            "userId": 1
-=======
-            "longitude": -123.2034,
-            "latitude": 49.2649,
-            "userId": 1,
-            "id":3
->>>>>>> a618104dbad85a0d78e4686d89e6b3c21f9d89c7
-        })
+        console.log(this.props.destination)
+        console.log(this.props.user)
+        if (this.props.user != "") {
+            axios.post('http://localhost:8080/comment', {
+                "ccontent": content,
+                "upvote": 0,
+                "downvote": 0,
+                "latitude": this.props.destination.lat,
+                "longitude": this.props.destination.lng,
+                "userId": this.props.user.id,
+            })
             .then(() => {
                 this.fetchAllComments();
             });
+        }
     }
 
     handleInputChange(e) {
@@ -53,7 +59,8 @@ export class Input extends Component {
     }
 
     fetchAllComments() {
-        axios.get('http://localhost:8080/comments')
+        console.log(this.props.destination);
+        axios.get(`http://localhost:8080/comments/${this.props.destination.lat}/${this.props.destination.lng}`)
             .then(res => {
                 const comments = res.data;
                 this.setState({
@@ -62,25 +69,17 @@ export class Input extends Component {
             });
     }
 
-    // TODO
-    // fetchUserNameById(id) {
-    //     axios.get(`http://localhost:8080/users/${id}`)
-    //         .then(res => {
-    //             const user = res.data;
-    //             this.setState({
-    //                 user
-    //             });
-    //         })
-    // }
-
     componentDidMount() {
         this.fetchAllComments();
     }
 
-   
     render() {
         return (
             <div className="container" style={{ marginTop: "50px" }}>
+                <button onClick={() => {
+                    this.fetchAllComments()
+                }}
+                >Refresh comments</button>
                 <Card className="input-area my-3">
                     <div className="row">
                         <div className="col-lg-10">

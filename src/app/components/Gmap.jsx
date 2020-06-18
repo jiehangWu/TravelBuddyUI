@@ -73,6 +73,7 @@ class Gmap extends Component {
     super(props);
     this.state = {
       center: { lat: 49.2827, lng: -123.1207 },
+      range: 1,
       markers: []
     };
     // this.fetchAllGeolocations = this.fetchAllGeolocations.bind(this);
@@ -81,21 +82,23 @@ class Gmap extends Component {
     zoom: 10
   };
 
-  searchDestination(x, y) {
+  searchDestination(x, y, r) {
     // TODO: Validation
     this.setState({
         center: {
           lat: parseFloat(x),
           lng: parseFloat(y),
-        }, 
+        },
+        range: parseFloat(r)
       });
     
-    axios.get(`http://localhost:8080/covidcaserangelist/${this.state.center.lat}/${this.state.center.lng}`)
+    axios.get(`http://localhost:8080/covidcaserangelist/${this.state.center.lat}/${this.state.center.lng}/${this.state.range}`)
     .then(res => {
       const markers = res.data.map(obj => {
         return {
           lat: obj["latitude"],
           lng: obj["longitude"],
+          type: obj["caseType"],
           count: obj["count"]
         };
       });
@@ -103,6 +106,11 @@ class Gmap extends Component {
       this.setState({
         markers
       })
+    });
+
+    this.props.setAppDestination({
+      lat: parseFloat(x),
+      lng: parseFloat(y),
     });
   }
 
@@ -113,8 +121,9 @@ class Gmap extends Component {
         <button onClick={() => {
             const buf_lat = document.getElementById("input_lat").value
             const buf_lng = document.getElementById("input_lng").value
-            console.log("inputting lat: " + buf_lat + ", lng: " + buf_lng)
-            this.searchDestination(buf_lat, buf_lng)
+            const r = document.getElementById("input_range").value
+            console.log("inputting lat: " + buf_lat + ", lng: " + buf_lng, ", range: " + r)
+            this.searchDestination(buf_lat, buf_lng, r)
           }}
         >Search location</button>
         <GoogleMapReact
@@ -126,13 +135,13 @@ class Gmap extends Component {
           {this.state.markers.map((marker) => {
             let lat = marker.lat;
             let lng = marker.lng;
-            console.log({ lat, lng });
+            console.log({ lat, lng } + `${parseInt(marker.count) * 5}px`);
             return (
               <CovidCase
                 lat={lat}
                 lng={lng}
                 text={marker.count}
-                style={{ height: `${marker.count * 5}vh`, width: '100%' }}
+                style={{ height: `${parseInt(marker.count) * 5}px`, width: `${parseInt(marker.count) * 5}px`}}
                 onClick ={() => console.log("Clicked")}
               />
             );
